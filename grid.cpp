@@ -18,7 +18,7 @@ bool Grid::setValue(int r, int c, int value)
 {
     if (isValidEntry(r, c, value)) {
         m_values[r][c] = value;
-        updatePossibles();
+        updatePossibles(r, c);
         return true;
     } else {
         return false;
@@ -30,6 +30,11 @@ const QVector<bool> &Grid::getPossible(int r, int c) const
     return m_possible[r][c];
 }
 
+void Grid::removePossible(int r, int c, int value)
+{
+    m_possible[r][c][value - 1] = false;
+}
+
 bool Grid::isValidEntry(int r, int c, int value)
 {
     if (value == 0) {
@@ -38,12 +43,20 @@ bool Grid::isValidEntry(int r, int c, int value)
     return m_possible[r][c][value - 1];
 }
 
-void Grid::updatePossibles()
+void Grid::updatePossibles(int r, int c)
 {
-    for (int r = 0; r < 9; ++r) {
-        for (int c = 0; c < 9; ++c) {
+    for (int i = 0; i < 9; ++i) {
+        for (int v = 1; v <= 9; ++v) {
+            m_possible[r][i][v - 1] = isPossible(r, i, v);
+            m_possible[i][c][v - 1] = isPossible(i, c, v);
+        }
+    }
+    int boxRow = r - r % 3;
+    int boxCol = c - c % 3;
+    for (int i = boxRow; i < boxRow + 3; ++i) {
+        for (int j = boxCol; j < boxCol + 3; ++j) {
             for (int v = 1; v <= 9; ++v) {
-                m_possible[r][c][v - 1] = isPossible(r, c, v);
+                m_possible[i][j][v - 1] = isPossible(i, j, v);
             }
         }
     }

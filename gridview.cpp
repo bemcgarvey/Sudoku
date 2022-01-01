@@ -125,8 +125,10 @@ void GridView::keyPressEvent(QKeyEvent *event)
 {
     if (m_selectedX >= 0 && m_selectedY >= 0) {
         if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
-            if (!m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0)) {
-                //TODO indicate invalid entry somehow
+            if (event->modifiers() & Qt::AltModifier) {
+                m_grid->removePossible(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+            } else {
+                m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
             }
         } else if (event->key() == Qt::Key_Space) {
             m_grid->setValue(m_selectedX, m_selectedY, 0);
