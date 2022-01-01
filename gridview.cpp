@@ -62,21 +62,25 @@ void GridView::paintEvent(QPaintEvent *event)
                             painter.setFont(smallFont);
                             int ty;
                             int tx;
-                            for (auto &p : m_grid->getPossible(r * 3 + i, c * 3 + j)) {
-                                if (p <= 3) {
+                            const QVector<bool> &p = m_grid->getPossible(r * 3 + i, c * 3 + j);
+                            for (int n = 1; n <= 9; ++n) {
+                                if (!p[n - 1]) {
+                                    continue;
+                                }
+                                if (n <= 3) {
                                     tx = x + 2;
                                 }
-                                if (p >= 4 && p <= 6) {
+                                if (n >= 4 && n <= 6) {
                                     tx = (x + 2) + (boxSize - boxSize / 5) / 2;
-                                } else if (p >= 7) {
+                                } else if (n >= 7) {
                                     tx = (x + 2) + boxSize - boxSize / 5;
                                 }
-                                ty = 1 + (((p - 1) % 3) * (boxSize / 5));
+                                ty = 1 + (((n - 1) % 3) * (boxSize / 5));
                                 painter.drawText(tx + 1 + i * boxSize,
                                                  y + 1 + j * boxSize + ty,
                                                  boxSize / 5, boxSize / 5,
                                                  Qt::AlignLeft | Qt::AlignVCenter,
-                                                 QString().setNum(p));
+                                                 QString().setNum(n));
 
                             }
                         }
