@@ -29,8 +29,64 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuPuzzle">
+    <property name="title">
+     <string>Puzzle</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionLock_Editing"/>
+    <addaction name="actionUnlock_Editing"/>
+    <addaction name="separator"/>
+    <addaction name="actionSolve"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuPuzzle"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionLock_Editing">
+   <property name="text">
+    <string>Lock Editing</string>
+   </property>
+  </action>
+  <action name="actionUnlock_Editing">
+   <property name="text">
+    <string>Unlock Editing</string>
+   </property>
+  </action>
+  <action name="actionSolve">
+   <property name="text">
+    <string>Solve</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

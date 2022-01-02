@@ -132,6 +132,29 @@ void GridView::keyPressEvent(QKeyEvent *event)
             }
         } else if (event->key() == Qt::Key_Space) {
             m_grid->setValue(m_selectedX, m_selectedY, 0);
+        } else {
+            switch (event->key()) {
+            case Qt::Key_Left:
+                if (m_selectedX > 0) {
+                    --m_selectedX;
+                }
+                break;
+            case Qt::Key_Right:
+                if (m_selectedX < 8) {
+                    ++m_selectedX;
+                }
+                break;
+            case Qt::Key_Up:
+                if (m_selectedY > 0) {
+                    --m_selectedY;
+                }
+                break;
+            case Qt::Key_Down:
+                if (m_selectedY < 8) {
+                    ++m_selectedY;
+                }
+                break;
+            }
         }
         update();
     }
