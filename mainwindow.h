@@ -21,6 +21,12 @@ private slots:
     void on_actionExit_triggered();
     void on_actionLock_Editing_triggered();
 
+    void on_actionUnlock_Editing_triggered();
+
+    void on_actionNew_triggered();
+
+    void on_actionPrint_triggered();
+
 private:
     Ui::MainWindow *ui;
     int m_invalidAttempts;

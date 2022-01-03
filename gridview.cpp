@@ -24,11 +24,26 @@ void GridView::lockGrid(bool lock)
     }
 }
 
-
-void GridView::paintEvent(QPaintEvent *event)
+void GridView::print(QPrinter *printer)
 {
-    Q_UNUSED(event)
-    QPainter painter(this);
+    QMarginsF margins(20, 20, 20, 20);
+    printer->setPageMargins(margins, QPageLayout::Millimeter);
+    QPainter painter;
+    painter.begin(printer);
+    int current_size = m_side;
+    if (painter.viewport().height() < painter.viewport().width()) {
+        m_side = painter.viewport().height();
+    } else {
+        m_side = painter.viewport().width();
+    }
+    m_side -= m_side % 9;
+    paint(painter, false);
+    painter.end();
+    m_side = current_size;
+}
+
+void GridView::paint(QPainter &painter, bool useColor)
+{
     int groupSize = m_side / 3;
     int boxSize = groupSize / 3 - 1;
     QFont largeFont = painter.font();
@@ -53,7 +68,9 @@ void GridView::paintEvent(QPaintEvent *event)
                 for (int j = 0; j < 3; ++j) {
                     if (r * 3 + i == m_selectedX && c * 3 + j == m_selectedY) {
                         painter.save();
-                        painter.setBrush(colorBrush);
+                        if (useColor) {
+                            painter.setBrush(colorBrush);
+                        }
                         painter.drawRect(x + 1 + i * boxSize, y + 1 + j * boxSize, boxSize, boxSize);
                         painter.restore();
                     } else {
@@ -65,7 +82,7 @@ void GridView::paintEvent(QPaintEvent *event)
                         value = m_grid->value(r * 3 + i, c * 3 + j, fixed);
                         if (value != GridCell::EMPTY_CELL) {
                             painter.setFont(largeFont);
-                            if (fixed) {
+                            if (fixed && useColor) {
                                 painter.setPen(Qt::blue);
                             } else {
                                 painter.setPen(Qt::black);
@@ -99,7 +116,6 @@ void GridView::paintEvent(QPaintEvent *event)
                                                  boxSize / 5, boxSize / 5,
                                                  Qt::AlignLeft | Qt::AlignVCenter,
                                                  QString().setNum(n));
-
                             }
                         }
                     }
@@ -107,6 +123,14 @@ void GridView::paintEvent(QPaintEvent *event)
             }
         }
     }
+}
+
+
+void GridView::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event)
+    QPainter painter(this);
+    paint(painter);
 }
 
 void GridView::resizeEvent(QResizeEvent *event)

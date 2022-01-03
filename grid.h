@@ -21,7 +21,7 @@ public:
 private:
     bool m_locked;
     QVector<QVector<GridCell>> m_cells;
-    void updateCells();
+    void updateCells(bool refresh = false);
 };
 
 #endif // GRID_H

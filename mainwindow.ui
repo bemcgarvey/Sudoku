@@ -47,6 +47,8 @@
     <addaction name="actionUnlock_Editing"/>
     <addaction name="separator"/>
     <addaction name="actionSolve"/>
+    <addaction name="separator"/>
+    <addaction name="actionPrint"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPuzzle"/>
@@ -85,6 +87,11 @@
   <action name="actionSolve">
    <property name="text">
     <string>Solve</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>Print</string>
    </property>
   </action>
  </widget>
