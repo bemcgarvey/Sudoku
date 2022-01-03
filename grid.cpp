@@ -2,84 +2,105 @@
 
 Grid::Grid()
 {
-    QVector<bool> p(9, true);
     for (int i = 0; i < 9; ++i) {
-        m_values.append(QVector<int>(9, 0));
-        m_possible.append(QVector<QVector<bool>>(9, p));
+        m_cells.append(QVector<GridCell>(9));
     }
 }
 
-int Grid::value(int r, int c)
+int Grid::value(int r, int c, bool &fixed) const
 {
-    return m_values[r][c];
+    fixed = m_cells[r][c].m_fixed;
+    return m_cells[r][c].m_value;
 }
 
-bool Grid::setValue(int r, int c, int value)
+Grid::GridErrorType Grid::setValue(int r, int c, int value)
 {
-    if (isValidEntry(r, c, value)) {
-        m_values[r][c] = value;
-        updatePossibles(r, c);
-        return true;
+    if (m_cells[r][c].m_fixed) {
+        return ERROR_LOCKED_CELL;
+    }
+    if (value == GridCell::EMPTY_CELL) {
+        m_cells[r][c].m_value = value;
+        updateCells();
+    } else if (m_cells[r][c].m_possible[value]) {
+        m_cells[r][c].m_value = value;
+        updateCells();
     } else {
-        return false;
+        return ERROR_INVALID_ENTRY;
     }
+    return NO_ERROR;
 }
 
-const QVector<bool> &Grid::getPossible(int r, int c) const
+const QBitArray Grid::getMarkup(int r, int c) const
 {
-    return m_possible[r][c];
+    return m_cells[r][c].m_userMarks;
 }
 
-void Grid::removePossible(int r, int c, int value)
+void Grid::removeMarkup(int r, int c, int value)
 {
-    m_possible[r][c][value - 1] = false;
+    m_cells[r][c].m_userMarks[value] = false;
 }
 
-bool Grid::isValidEntry(int r, int c, int value)
+void Grid::addMarkup(int r, int c, int value)
 {
-    if (value == 0) {
-        return true;
+    m_cells[r][c].m_userMarks[value] = true;
+}
+
+void Grid::toggleMarkup(int r, int c, int value)
+{
+    m_cells[r][c].m_userMarks[value] = !m_cells[r][c].m_userMarks[value];
+}
+
+bool Grid::solve()
+{
+    return false;
+}
+
+void Grid::lock()
+{
+    if (m_locked) {
+        return; //Already locked
     }
-    return m_possible[r][c][value - 1];
-}
-
-void Grid::updatePossibles(int r, int c)
-{
-    for (int i = 0; i < 9; ++i) {
-        for (int v = 1; v <= 9; ++v) {
-            m_possible[r][i][v - 1] = isPossible(r, i, v);
-            m_possible[i][c][v - 1] = isPossible(i, c, v);
-        }
-    }
-    int boxRow = r - r % 3;
-    int boxCol = c - c % 3;
-    for (int i = boxRow; i < boxRow + 3; ++i) {
-        for (int j = boxCol; j < boxCol + 3; ++j) {
-            for (int v = 1; v <= 9; ++v) {
-                m_possible[i][j][v - 1] = isPossible(i, j, v);
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            if (m_cells[r][c].m_value != GridCell::EMPTY_CELL) {
+                m_cells[r][c].m_fixed = true;
             }
         }
     }
+    m_locked = true;
 }
 
-bool Grid::isPossible(int r, int c, int value)
+void Grid::unlock()
 {
-    for (int i = 0; i < 9; ++i) {
-        if (i != c && m_values[r][i] == value) {
-            return false;
-        }
-        if (i != r && m_values[i][c] == value) {
-            return false;
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            m_cells[r][c].m_fixed = false;
         }
     }
-    int boxRow = r - r % 3;
-    int boxCol = c - c % 3;
-    for (int i = boxRow; i < boxRow + 3; ++i) {
-        for (int j = boxCol; j < boxCol + 3; ++j) {
-            if (i != r && j != c && m_values[i][j] == value) {
-                return false;
+    m_locked = false;
+    //TODO update markup to match possible
+}
+
+void Grid::updateCells()
+{
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            if (m_cells[r][c].m_value != GridCell::EMPTY_CELL) {
+                for (int i = 0; i < 9; ++i) {
+                    m_cells[r][i].m_possible[m_cells[r][c].m_value] = false;
+                    m_cells[i][c].m_possible[m_cells[r][c].m_value] = false;
+                    m_cells[r][i].m_userMarks[m_cells[r][c].m_value] = false;
+                    m_cells[i][c].m_userMarks[m_cells[r][c].m_value] = false;
+                }
+                int boxRow = r - r % 3;
+                int boxCol = c - c % 3;
+                for (int i = boxRow; i < boxRow + 3; ++i) {
+                    for (int j = boxCol; j < boxCol + 3; ++j) {
+                        m_cells[i][j].m_possible[m_cells[r][c].m_value] = false;
+                        m_cells[i][j].m_userMarks[m_cells[r][c].m_value] = false;
+                    }
+                }
             }
         }
     }
-    return true;
 }

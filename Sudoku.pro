@@ -10,12 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     grid.cpp \
+    gridcell.cpp \
     gridview.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     grid.h \
+    gridcell.h \
     gridview.h \
     mainwindow.h
 

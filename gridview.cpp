@@ -15,6 +15,15 @@ void GridView::setGrid(Grid *grid)
     m_grid.reset(grid);
 }
 
+void GridView::lockGrid(bool lock)
+{
+    if (lock) {
+        m_grid->lock();
+    } else {
+        m_grid->unlock();
+    }
+}
+
 
 void GridView::paintEvent(QPaintEvent *event)
 {
@@ -51,20 +60,29 @@ void GridView::paintEvent(QPaintEvent *event)
                         painter.drawRect(x + 1 + i * boxSize, y + 1 + j * boxSize, boxSize, boxSize);
                     }
                     if (m_grid) {
-                        if (m_grid->value(r * 3 + i, c * 3 + j) != 0) {
+                        bool fixed;
+                        int value;
+                        value = m_grid->value(r * 3 + i, c * 3 + j, fixed);
+                        if (value != GridCell::EMPTY_CELL) {
                             painter.setFont(largeFont);
+                            if (fixed) {
+                                painter.setPen(Qt::blue);
+                            } else {
+                                painter.setPen(Qt::black);
+                            }
                             painter.drawText(x + 1 + i * boxSize,
                                              y + 1 + j * boxSize,
                                              boxSize, boxSize,
                                              Qt::AlignHCenter | Qt::AlignVCenter,
-                                             QString().setNum(m_grid->value(r * 3 + i, c * 3 + j)));
+                                             QString().setNum(value));
+                            painter.setPen(Qt::black);
                         } else {
                             painter.setFont(smallFont);
                             int ty;
                             int tx;
-                            const QVector<bool> &p = m_grid->getPossible(r * 3 + i, c * 3 + j);
+                            const QBitArray &marks = m_grid->getMarkup(r * 3 + i, c * 3 + j);
                             for (int n = 1; n <= 9; ++n) {
-                                if (!p[n - 1]) {
+                                if (!marks[n]) {
                                     continue;
                                 }
                                 if (n <= 3) {
@@ -126,9 +144,11 @@ void GridView::keyPressEvent(QKeyEvent *event)
     if (m_selectedX >= 0 && m_selectedY >= 0) {
         if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
             if (event->modifiers() & Qt::AltModifier) {
-                m_grid->removePossible(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+                m_grid->toggleMarkup(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
             } else {
-                m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+                Grid::GridErrorType result;
+                result = m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+                //TODO emit signal for errors
             }
         } else if (event->key() == Qt::Key_Space) {
             m_grid->setValue(m_selectedX, m_selectedY, 0);
