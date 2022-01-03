@@ -148,7 +148,11 @@ void GridView::keyPressEvent(QKeyEvent *event)
             } else {
                 Grid::GridErrorType result;
                 result = m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
-                //TODO emit signal for errors
+                if (result == Grid::ERROR_LOCKED_CELL) {
+                    emit lockedCell();
+                } else if (result == Grid::ERROR_INVALID_ENTRY) {
+                    emit invalidEntry();
+                }
             }
         } else if (event->key() == Qt::Key_Space) {
             m_grid->setValue(m_selectedX, m_selectedY, 0);

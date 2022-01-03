@@ -16,11 +16,13 @@ public:
     ~MainWindow();
 
 private slots:
+    void onLockedEntry();
+    void onInvalidEntry();
     void on_actionExit_triggered();
-
     void on_actionLock_Editing_triggered();
 
 private:
     Ui::MainWindow *ui;
+    int m_invalidAttempts;
 };
 #endif // MAINWINDOW_H

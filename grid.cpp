@@ -15,6 +15,7 @@ int Grid::value(int r, int c, bool &fixed) const
 
 Grid::GridErrorType Grid::setValue(int r, int c, int value)
 {
+    //TODO handle a change in cell value
     if (m_cells[r][c].m_fixed) {
         return ERROR_LOCKED_CELL;
     }
