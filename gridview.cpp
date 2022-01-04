@@ -4,10 +4,11 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QDataStream>
+#include "solvethread.h"
 
 GridView::GridView(QWidget *parent, Qt::WindowFlags f) :
     QWidget(parent, f), m_grid(new Grid()),
-    m_selectedX(-1), m_selectedY(-1), m_showMarks(false)
+    m_selectedX(-1), m_selectedY(-1), m_showMarks(false), m_solving(false)
 {
 
 }
@@ -57,6 +58,16 @@ void GridView::load(QDataStream &in)
 bool GridView::solve()
 {
     return m_grid->solve();
+}
+
+void GridView::solveWithThread()
+{
+    m_selectedX = -1;
+    m_selectedY = -1;
+    m_solveThread.reset(m_grid->solveWithThread());
+    connect(m_solveThread.get(), &SolveThread::progress, this, &GridView::onSolveProgress);
+    m_solving = true;
+    m_solveThread->run();
 }
 
 void GridView::showMarks(bool show)
@@ -156,6 +167,16 @@ void GridView::paint(QPainter &painter, bool useColor)
     }
 }
 
+void GridView::onSolveProgress(int r)
+{
+    repaint();
+    if (r < 9) {
+        m_solveThread->resume();
+    } else {
+        m_solving = false;
+    }
+}
+
 
 void GridView::paintEvent(QPaintEvent *event)
 {
@@ -177,6 +198,11 @@ void GridView::resizeEvent(QResizeEvent *event)
 
 void GridView::mousePressEvent(QMouseEvent *event)
 {
+    if (m_solving) {
+        event->ignore();
+        return;
+    }
+    event->accept();
     QPoint pos = event->pos();
     m_selectedX = -1;
     m_selectedY = -1;
@@ -195,6 +221,10 @@ void GridView::mousePressEvent(QMouseEvent *event)
 
 void GridView::keyPressEvent(QKeyEvent *event)
 {
+    if (m_solving) {
+        event->ignore();
+        return;
+    }
     if (m_selectedX >= 0 && m_selectedY >= 0) {
         if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
             if (event->modifiers() & Qt::AltModifier) {

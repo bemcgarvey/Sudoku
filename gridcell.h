@@ -3,10 +3,12 @@
 
 #include <QBitArray>
 class Grid;
+class SolveThread;
 
 class GridCell
 {
 friend Grid;
+friend SolveThread;
 public:
     GridCell();
     enum {EMPTY_CELL = 0};

@@ -7,9 +7,6 @@
 #include <QSettings>
 #include <QMessageBox>
 
-//TODO Use thread for solve and show progress
-//TODO Add icon and about box
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_invalidEntries(0)
@@ -117,11 +114,12 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSolve_triggered()
 {
-    if (ui->gridView->solve()) {
-        update();
-    } else {
-        QMessageBox::critical(this, "Sudoku", "No solution possible");
-    }
+//    if (ui->gridView->solve()) {
+//        update();
+//    } else {
+//        QMessageBox::critical(this, "Sudoku", "No solution possible");
+//    }
+    ui->gridView->solveWithThread();
 }
 
 

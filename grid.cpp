@@ -1,5 +1,6 @@
 #include "grid.h"
 #include <QDataStream>
+#include "solvethread.h"
 
 Grid::Grid() : m_locked(false)
 {
@@ -58,6 +59,20 @@ void Grid::toggleMarkup(int r, int c, int value)
 bool Grid::solve()
 {
     return solveCell(0, 0);
+}
+
+SolveThread *Grid::solveWithThread()
+{
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            if (m_cells[r][c].m_value != GridCell::EMPTY_CELL) {
+                m_cells[r][c].m_fixed = true;
+            }
+        }
+    }
+    updateCells(true);
+    SolveThread *sThread = new SolveThread(this, nullptr);
+    return sThread;
 }
 
 void Grid::lock()

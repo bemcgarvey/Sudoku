@@ -14,14 +14,16 @@ SOURCES += \
     gridcell.cpp \
     gridview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    solvethread.cpp
 
 HEADERS += \
     aboutdialog.h \
     grid.h \
     gridcell.h \
     gridview.h \
-    mainwindow.h
+    mainwindow.h \
+    solvethread.h
 
 FORMS += \
     aboutdialog.ui \

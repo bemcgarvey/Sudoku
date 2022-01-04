@@ -4,8 +4,11 @@
 #include <QVector>
 #include "gridcell.h"
 
+class SolveThread;
+
 class Grid
 {
+friend SolveThread;
 public:
     Grid();
     enum GridErrorType {NO_ERROR, ERROR_LOCKED_CELL, ERROR_INVALID_ENTRY};
@@ -16,6 +19,7 @@ public:
     void addMarkup(int r, int c, int value);
     void toggleMarkup(int r, int c, int value);
     bool solve();
+    SolveThread* solveWithThread();
     void lock();
     void unlock();
     void updateCells(bool refresh = false);
