@@ -16,6 +16,8 @@ public:
     void save(QDataStream &out);
     void load(QDataStream &in);
     bool solve();
+    void showMarks(bool show);
+    void refreshMarks();
 private:
     std::unique_ptr<Grid> m_grid;
     const int m_margin = 5;
@@ -23,6 +25,7 @@ private:
     int m_selectedX;
     int m_selectedY;
     void paint(QPainter &painter, bool useColor = true);
+    bool m_showMarks;
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;

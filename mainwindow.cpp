@@ -6,18 +6,19 @@
 #include <QSettings>
 #include <QMessageBox>
 
-//TODO Add hide/show markup
-//TODO move print to File menu
-//TODO speed up solve and move to another thread?
-//TODO improve messages
+//TODO Use thread for solve and show progress
+//TODO Add icon and about box
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), m_invalidAttempts(0)
+    , ui(new Ui::MainWindow), m_invalidEntries(0)
 {
     ui->setupUi(this);
     connect(ui->gridView, &GridView::lockedCell, this, &MainWindow::onLockedEntry);
     connect(ui->gridView, &GridView::invalidEntry, this, &MainWindow::onInvalidEntry);
+    statusLabel = new QLabel();
+    statusLabel->setText("Invalid Entries: 0");
+    ui->statusbar->addPermanentWidget(statusLabel);
 }
 
 MainWindow::~MainWindow()
@@ -33,8 +34,8 @@ void MainWindow::onLockedEntry()
 void MainWindow::onInvalidEntry()
 {
     ui->statusbar->showMessage("Invalid Entry", 2000);
-    ++m_invalidAttempts;
-    //TODO show invalid attempts?
+    ++m_invalidEntries;
+    statusLabel->setText(QString("Invalid Entries: %1").arg(m_invalidEntries));
 }
 
 
@@ -47,7 +48,8 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionLock_Editing_triggered()
 {
     ui->gridView->lockGrid(true);
-    m_invalidAttempts = 0;
+    m_invalidEntries = 0;
+    statusLabel->setText("Invalid Entries: 0");
     update();
 }
 
@@ -119,5 +121,17 @@ void MainWindow::on_actionSolve_triggered()
     } else {
         QMessageBox::critical(this, "Sudoku", "No solution possible");
     }
+}
+
+
+void MainWindow::on_actionShow_Pencil_Marks_toggled(bool arg1)
+{
+    ui->gridView->showMarks(arg1);
+}
+
+
+void MainWindow::on_actionRefresh_Pencil_Marks_triggered()
+{
+    ui->gridView->refreshMarks();
 }
 

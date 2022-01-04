@@ -18,12 +18,12 @@ public:
     bool solve();
     void lock();
     void unlock();
+    void updateCells(bool refresh = false);
     friend QDataStream & operator<< (QDataStream& stream, const Grid& grid);
     friend QDataStream & operator>> (QDataStream& stream, Grid& grid);
 private:
     bool m_locked;
     QVector<QVector<GridCell>> m_cells;
-    void updateCells(bool refresh = false);
     bool solveCell(int r, int c);
 };
 

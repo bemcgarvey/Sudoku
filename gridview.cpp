@@ -6,7 +6,8 @@
 #include <QDataStream>
 
 GridView::GridView(QWidget *parent, Qt::WindowFlags f) :
-    QWidget(parent, f), m_grid(new Grid()), m_selectedX(-1), m_selectedY(-1)
+    QWidget(parent, f), m_grid(new Grid()),
+    m_selectedX(-1), m_selectedY(-1), m_showMarks(false)
 {
 
 }
@@ -56,6 +57,18 @@ void GridView::load(QDataStream &in)
 bool GridView::solve()
 {
     return m_grid->solve();
+}
+
+void GridView::showMarks(bool show)
+{
+    m_showMarks = show;
+    update();
+}
+
+void GridView::refreshMarks()
+{
+    m_grid->updateCells(true);
+    update();
 }
 
 void GridView::paint(QPainter &painter, bool useColor)
@@ -110,28 +123,30 @@ void GridView::paint(QPainter &painter, bool useColor)
                                              QString().setNum(value));
                             painter.setPen(Qt::black);
                         } else {
-                            painter.setFont(smallFont);
-                            int ty;
-                            int tx;
-                            const QBitArray &marks = m_grid->getMarkup(r * 3 + i, c * 3 + j);
-                            for (int n = 1; n <= 9; ++n) {
-                                if (!marks[n]) {
-                                    continue;
+                            if (m_showMarks) {
+                                painter.setFont(smallFont);
+                                int ty;
+                                int tx;
+                                const QBitArray &marks = m_grid->getMarkup(r * 3 + i, c * 3 + j);
+                                for (int n = 1; n <= 9; ++n) {
+                                    if (!marks[n]) {
+                                        continue;
+                                    }
+                                    if (n <= 3) {
+                                        tx = x + 2;
+                                    }
+                                    if (n >= 4 && n <= 6) {
+                                        tx = (x + 2) + (boxSize - boxSize / 5) / 2;
+                                    } else if (n >= 7) {
+                                        tx = (x + 2) + boxSize - boxSize / 5;
+                                    }
+                                    ty = 1 + (((n - 1) % 3) * (boxSize / 5));
+                                    painter.drawText(tx + 1 + j * boxSize,
+                                                     y + 1 + i * boxSize + ty,
+                                                     boxSize / 5, boxSize / 5,
+                                                     Qt::AlignLeft | Qt::AlignVCenter,
+                                                     QString().setNum(n));
                                 }
-                                if (n <= 3) {
-                                    tx = x + 2;
-                                }
-                                if (n >= 4 && n <= 6) {
-                                    tx = (x + 2) + (boxSize - boxSize / 5) / 2;
-                                } else if (n >= 7) {
-                                    tx = (x + 2) + boxSize - boxSize / 5;
-                                }
-                                ty = 1 + (((n - 1) % 3) * (boxSize / 5));
-                                painter.drawText(tx + 1 + j * boxSize,
-                                                 y + 1 + i * boxSize + ty,
-                                                 boxSize / 5, boxSize / 5,
-                                                 Qt::AlignLeft | Qt::AlignVCenter,
-                                                 QString().setNum(n));
                             }
                         }
                     }

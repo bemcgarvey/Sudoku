@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>534</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>534</width>
      <height>21</height>
     </rect>
    </property>
@@ -35,6 +35,8 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionPrint"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -48,10 +50,17 @@
     <addaction name="separator"/>
     <addaction name="actionSolve"/>
     <addaction name="separator"/>
-    <addaction name="actionPrint"/>
+   </widget>
+   <widget class="QMenu" name="menuPencil_Marks">
+    <property name="title">
+     <string>Pencil Marks</string>
+    </property>
+    <addaction name="actionShow_Pencil_Marks"/>
+    <addaction name="actionRefresh_Pencil_Marks"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPuzzle"/>
+   <addaction name="menuPencil_Marks"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -92,6 +101,22 @@
   <action name="actionPrint">
    <property name="text">
     <string>Print</string>
+   </property>
+  </action>
+  <action name="actionShow_Pencil_Marks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show Pencil Marks</string>
+   </property>
+  </action>
+  <action name="actionRefresh_Pencil_Marks">
+   <property name="text">
+    <string>Refresh Pencil Marks</string>
    </property>
   </action>
  </widget>
