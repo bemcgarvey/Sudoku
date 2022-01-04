@@ -6,15 +6,16 @@
 #include <QSettings>
 #include <QMessageBox>
 
-//TODO Add solve
 //TODO Add hide/show markup
+//TODO move print to File menu
+//TODO speed up solve and move to another thread?
+//TODO improve messages
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_invalidAttempts(0)
 {
     ui->setupUi(this);
-    //ui->gridView->setGrid(new Grid());
     connect(ui->gridView, &GridView::lockedCell, this, &MainWindow::onLockedEntry);
     connect(ui->gridView, &GridView::invalidEntry, this, &MainWindow::onInvalidEntry);
 }
