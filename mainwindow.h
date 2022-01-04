@@ -31,6 +31,8 @@ private slots:
 
     void on_actionRefresh_Pencil_Marks_triggered();
 
+    void on_actionAbout_Sudoku_triggered();
+
 private:
     Ui::MainWindow *ui;
     int m_invalidEntries;

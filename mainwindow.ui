@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Sudoku</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/Sudoku.ico</normaloff>:/Sudoku.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -58,9 +62,16 @@
     <addaction name="actionShow_Pencil_Marks"/>
     <addaction name="actionRefresh_Pencil_Marks"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_Sudoku"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPuzzle"/>
    <addaction name="menuPencil_Marks"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -119,6 +130,11 @@
     <string>Refresh Pencil Marks</string>
    </property>
   </action>
+  <action name="actionAbout_Sudoku">
+   <property name="text">
+    <string>About Sudoku</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -128,6 +144,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,3 +1,4 @@
+#include "aboutdialog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QPrintDialog>
@@ -133,5 +134,12 @@ void MainWindow::on_actionShow_Pencil_Marks_toggled(bool arg1)
 void MainWindow::on_actionRefresh_Pencil_Marks_triggered()
 {
     ui->gridView->refreshMarks();
+}
+
+
+void MainWindow::on_actionAbout_Sudoku_triggered()
+{
+    std::unique_ptr<AboutDialog> dlg(new AboutDialog(this));
+    dlg->exec();
 }
 
