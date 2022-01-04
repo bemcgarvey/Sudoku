@@ -10,9 +10,11 @@ class GridView : public QWidget
     Q_OBJECT
 public:
     GridView(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    void setGrid(Grid *grid);
+    void newGrid();
     void lockGrid(bool lock);
     void print(QPrinter *printer);
+    void save(QDataStream &out);
+    void load(QDataStream &in);
 private:
     std::unique_ptr<Grid> m_grid;
     const int m_margin = 5;

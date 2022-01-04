@@ -3,16 +3,17 @@
 #include <QFont>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QDataStream>
 
 GridView::GridView(QWidget *parent, Qt::WindowFlags f) :
-    QWidget(parent, f), m_grid(nullptr), m_selectedX(-1), m_selectedY(-1)
+    QWidget(parent, f), m_grid(new Grid()), m_selectedX(-1), m_selectedY(-1)
 {
 
 }
 
-void GridView::setGrid(Grid *grid)
+void GridView::newGrid()
 {
-    m_grid.reset(grid);
+    m_grid.reset(new Grid());
 }
 
 void GridView::lockGrid(bool lock)
@@ -40,6 +41,16 @@ void GridView::print(QPrinter *printer)
     paint(painter, false);
     painter.end();
     m_side = current_size;
+}
+
+void GridView::save(QDataStream &out)
+{
+    out << *m_grid;
+}
+
+void GridView::load(QDataStream &in)
+{
+    in >> *m_grid;
 }
 
 void GridView::paint(QPainter &painter, bool useColor)

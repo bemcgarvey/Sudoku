@@ -27,6 +27,10 @@ private slots:
 
     void on_actionPrint_triggered();
 
+    void on_actionOpen_triggered();
+
+    void on_actionSave_triggered();
+
 private:
     Ui::MainWindow *ui;
     int m_invalidAttempts;

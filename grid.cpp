@@ -1,4 +1,5 @@
 #include "grid.h"
+#include <QDataStream>
 
 Grid::Grid() : m_locked(false)
 {
@@ -56,7 +57,7 @@ void Grid::toggleMarkup(int r, int c, int value)
 
 bool Grid::solve()
 {
-    return false;
+    return solveCell(0, 0);
 }
 
 void Grid::lock()
@@ -115,4 +116,42 @@ void Grid::updateCells(bool refresh)
             }
         }
     }
+}
+
+bool Grid::solveCell(int r, int c)
+{
+    if (r == 3) {
+        return true; //All cells are filled
+    }
+    int nextCol;
+    int nextRow = r;
+    nextCol = c + 1;
+    if  (nextCol == 3) {
+        nextCol = 0;
+        ++nextRow;
+    }
+    if (m_cells[r][c].m_fixed) {
+        return solveCell(nextRow, nextCol);  //nothing to do here so move on
+    }
+    for (int i = 1; i <= 9; ++i) {
+        if (m_cells[r][c].m_possible[i]) {
+            setValue(r, c, i);
+            if (solveCell(nextRow, nextCol)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+QDataStream & operator<< (QDataStream& stream, const Grid& grid) {
+    stream << grid.m_locked << grid.m_cells;
+    return stream;
+}
+
+QDataStream & operator>> (QDataStream& stream, Grid& grid) {
+    stream >> grid.m_locked;
+    stream >> grid.m_cells;
+    return stream;
 }

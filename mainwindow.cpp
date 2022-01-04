@@ -2,16 +2,18 @@
 #include "ui_mainwindow.h"
 #include <QPrintDialog>
 #include <QPrinter>
+#include <QFileDialog>
+#include <QSettings>
 
-//TODO Add save and load
 //TODO Add solve
+//TODO Add hide/show markup
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_invalidAttempts(0)
 {
     ui->setupUi(this);
-    ui->gridView->setGrid(new Grid());
+    //ui->gridView->setGrid(new Grid());
     connect(ui->gridView, &GridView::lockedCell, this, &MainWindow::onLockedEntry);
     connect(ui->gridView, &GridView::invalidEntry, this, &MainWindow::onInvalidEntry);
 }
@@ -57,7 +59,7 @@ void MainWindow::on_actionUnlock_Editing_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
-    ui->gridView->setGrid(new Grid());
+    ui->gridView->newGrid();
     update();
 }
 
@@ -68,6 +70,42 @@ void MainWindow::on_actionPrint_triggered()
     std::unique_ptr<QPrintDialog> dlg(new QPrintDialog(&printer, this));
     if (dlg->exec() == QDialog::Accepted) {
         ui->gridView->print(&printer);
+    }
+}
+
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString fileName;
+    QSettings settings;
+    QString lastFile = settings.value("LastFile", "").toString();
+    fileName = QFileDialog::getOpenFileName(this, "Open puzze", lastFile, "Sudoku puzzels (*.sud)");
+    if (fileName != "") {
+        QFile file(fileName);
+        file.open(QIODevice::ReadOnly);
+        QDataStream in(&file);
+        ui->gridView->load(in);
+        file.close();
+        settings.setValue("LastFile", fileName);
+        update();
+    }
+}
+
+
+void MainWindow::on_actionSave_triggered()
+{
+    QString fileName;
+    QSettings settings;
+    QString lastFile = settings.value("LastFile", "").toString();
+    fileName = QFileDialog::getSaveFileName(this, "Save puzzle", lastFile, "Sudoku puzzels (*.sud)");
+    if (fileName != "") {
+        QFile file(fileName);
+        file.open(QIODevice::WriteOnly);
+        QDataStream out(&file);
+        ui->gridView->save(out);
+        file.close();
+        QSettings settings;
+        settings.setValue("LastFile", fileName);
     }
 }
 
