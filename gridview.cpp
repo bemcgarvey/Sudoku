@@ -53,6 +53,11 @@ void GridView::load(QDataStream &in)
     in >> *m_grid;
 }
 
+bool GridView::solve()
+{
+    return m_grid->solve();
+}
+
 void GridView::paint(QPainter &painter, bool useColor)
 {
     int groupSize = m_side / 3;
@@ -70,22 +75,22 @@ void GridView::paint(QPainter &painter, bool useColor)
     painter.setBrush(whiteBrush);
     for (int r = 0; r < 3; ++r) {
         for (int c = 0; c < 3; ++c) {
-            int x = m_margin + r * groupSize;
-            int y = m_margin + c * groupSize;
+            int x = m_margin + c * groupSize;
+            int y = m_margin + r * groupSize;
             painter.setPen(widePen);
             painter.drawRect(x, y, groupSize, groupSize);
             painter.setPen(smallPen);
             for (int i = 0; i < 3; ++i) {
                 for (int j = 0; j < 3; ++j) {
-                    if (r * 3 + i == m_selectedX && c * 3 + j == m_selectedY) {
+                    if (r * 3 + i == m_selectedY && c * 3 + j == m_selectedX) {
                         painter.save();
                         if (useColor) {
                             painter.setBrush(colorBrush);
                         }
-                        painter.drawRect(x + 1 + i * boxSize, y + 1 + j * boxSize, boxSize, boxSize);
+                        painter.drawRect(x + 1 + j * boxSize, y + 1 + i * boxSize, boxSize, boxSize);
                         painter.restore();
                     } else {
-                        painter.drawRect(x + 1 + i * boxSize, y + 1 + j * boxSize, boxSize, boxSize);
+                        painter.drawRect(x + 1 + j * boxSize, y + 1 + i * boxSize, boxSize, boxSize);
                     }
                     if (m_grid) {
                         bool fixed;
@@ -98,8 +103,8 @@ void GridView::paint(QPainter &painter, bool useColor)
                             } else {
                                 painter.setPen(Qt::black);
                             }
-                            painter.drawText(x + 1 + i * boxSize,
-                                             y + 1 + j * boxSize,
+                            painter.drawText(x + 1 + j * boxSize,
+                                             y + 1 + i * boxSize,
                                              boxSize, boxSize,
                                              Qt::AlignHCenter | Qt::AlignVCenter,
                                              QString().setNum(value));
@@ -122,8 +127,8 @@ void GridView::paint(QPainter &painter, bool useColor)
                                     tx = (x + 2) + boxSize - boxSize / 5;
                                 }
                                 ty = 1 + (((n - 1) % 3) * (boxSize / 5));
-                                painter.drawText(tx + 1 + i * boxSize,
-                                                 y + 1 + j * boxSize + ty,
+                                painter.drawText(tx + 1 + j * boxSize,
+                                                 y + 1 + i * boxSize + ty,
                                                  boxSize / 5, boxSize / 5,
                                                  Qt::AlignLeft | Qt::AlignVCenter,
                                                  QString().setNum(n));
@@ -170,7 +175,6 @@ void GridView::mousePressEvent(QMouseEvent *event)
     }
     setFocus();
     update();
-
 }
 
 
@@ -179,10 +183,10 @@ void GridView::keyPressEvent(QKeyEvent *event)
     if (m_selectedX >= 0 && m_selectedY >= 0) {
         if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
             if (event->modifiers() & Qt::AltModifier) {
-                m_grid->toggleMarkup(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+                m_grid->toggleMarkup(m_selectedY, m_selectedX, event->key() - Qt::Key_0);
             } else {
                 Grid::GridErrorType result;
-                result = m_grid->setValue(m_selectedX, m_selectedY, event->key() - Qt::Key_0);
+                result = m_grid->setValue(m_selectedY, m_selectedX, event->key() - Qt::Key_0);
                 if (result == Grid::ERROR_LOCKED_CELL) {
                     emit lockedCell();
                 } else if (result == Grid::ERROR_INVALID_ENTRY) {
@@ -190,7 +194,7 @@ void GridView::keyPressEvent(QKeyEvent *event)
                 }
             }
         } else if (event->key() == Qt::Key_Space) {
-            m_grid->setValue(m_selectedX, m_selectedY, 0);
+            m_grid->setValue(m_selectedY, m_selectedX, 0);
         } else {
             switch (event->key()) {
             case Qt::Key_Left:

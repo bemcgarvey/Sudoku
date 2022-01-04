@@ -118,15 +118,18 @@ void Grid::updateCells(bool refresh)
     }
 }
 
+#include <QDebug>
+
 bool Grid::solveCell(int r, int c)
 {
-    if (r == 3) {
+    qDebug() << r << ":" << c;
+    if (r == 9) {
         return true; //All cells are filled
     }
     int nextCol;
     int nextRow = r;
     nextCol = c + 1;
-    if  (nextCol == 3) {
+    if  (nextCol == 9) {
         nextCol = 0;
         ++nextRow;
     }
@@ -136,6 +139,7 @@ bool Grid::solveCell(int r, int c)
     for (int i = 1; i <= 9; ++i) {
         if (m_cells[r][c].m_possible[i]) {
             setValue(r, c, i);
+            qDebug() << "*" << i;
             if (solveCell(nextRow, nextCol)) {
                 return true;
             }

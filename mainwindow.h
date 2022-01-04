@@ -31,6 +31,8 @@ private slots:
 
     void on_actionSave_triggered();
 
+    void on_actionSolve_triggered();
+
 private:
     Ui::MainWindow *ui;
     int m_invalidAttempts;

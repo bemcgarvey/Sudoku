@@ -15,6 +15,7 @@ public:
     void print(QPrinter *printer);
     void save(QDataStream &out);
     void load(QDataStream &in);
+    bool solve();
 private:
     std::unique_ptr<Grid> m_grid;
     const int m_margin = 5;

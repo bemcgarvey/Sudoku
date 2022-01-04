@@ -4,6 +4,7 @@
 #include <QPrinter>
 #include <QFileDialog>
 #include <QSettings>
+#include <QMessageBox>
 
 //TODO Add solve
 //TODO Add hide/show markup
@@ -106,6 +107,16 @@ void MainWindow::on_actionSave_triggered()
         file.close();
         QSettings settings;
         settings.setValue("LastFile", fileName);
+    }
+}
+
+
+void MainWindow::on_actionSolve_triggered()
+{
+    if (ui->gridView->solve()) {
+        update();
+    } else {
+        QMessageBox::critical(this, "Sudoku", "No solution possible");
     }
 }
 
