@@ -21,6 +21,7 @@ public:
     void showMarks(bool show);
     void refreshMarks();
     void resumeSolve();
+    void clear();
 private:
     std::unique_ptr<Grid> m_grid;
     std::unique_ptr<SolveThread> m_solveThread;

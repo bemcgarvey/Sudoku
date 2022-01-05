@@ -23,6 +23,7 @@ public:
     void lock();
     void unlock();
     void updateCells(bool refresh = false);
+    void clear();
     friend QDataStream & operator<< (QDataStream& stream, const Grid& grid);
     friend QDataStream & operator>> (QDataStream& stream, Grid& grid);
 private:

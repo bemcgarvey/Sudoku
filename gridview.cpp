@@ -82,6 +82,12 @@ void GridView::refreshMarks()
     update();
 }
 
+void GridView::clear()
+{
+    m_grid->clear();
+    update();
+}
+
 void GridView::paint(QPainter &painter, bool useColor)
 {
     int groupSize = m_side / 3;
@@ -228,7 +234,7 @@ void GridView::keyPressEvent(QKeyEvent *event)
     if (m_selectedX >= 0 && m_selectedY >= 0) {
         if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
             if (event->modifiers() & Qt::AltModifier) {
-                m_grid->toggleMarkup(m_selectedY, m_selectedX, event->key() - Qt::Key_0);
+                m_grid->removeMarkup(m_selectedY, m_selectedX, event->key() - Qt::Key_0);
             } else {
                 Grid::GridErrorType result;
                 result = m_grid->setValue(m_selectedY, m_selectedX, event->key() - Qt::Key_0);

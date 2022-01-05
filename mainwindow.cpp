@@ -141,3 +141,9 @@ void MainWindow::on_actionAbout_Sudoku_triggered()
     dlg->exec();
 }
 
+
+void MainWindow::on_actionClear_triggered()
+{
+    ui->gridView->clear();
+}
+

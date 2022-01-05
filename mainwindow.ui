@@ -51,6 +51,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionLock_Editing"/>
     <addaction name="actionUnlock_Editing"/>
+    <addaction name="actionClear"/>
     <addaction name="separator"/>
     <addaction name="actionSolve"/>
     <addaction name="separator"/>
@@ -133,6 +134,11 @@
   <action name="actionAbout_Sudoku">
    <property name="text">
     <string>About Sudoku</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>Clear</string>
    </property>
   </action>
  </widget>

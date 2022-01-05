@@ -133,6 +133,18 @@ void Grid::updateCells(bool refresh)
     }
 }
 
+void Grid::clear()
+{
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            if (!m_cells[r][c].m_fixed) {
+                m_cells[r][c].m_value = GridCell::EMPTY_CELL;
+            }
+        }
+    }
+    updateCells(true);
+}
+
 bool Grid::solveCell(int r, int c)
 {
     if (r == 9) {
